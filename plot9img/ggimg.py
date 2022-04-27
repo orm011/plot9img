@@ -63,25 +63,16 @@ def _add_image(f, im):
         ax.set_ylim(-h, 0)
     return f
 
-
-def ggimg_draw(ggim: plotnine.ggplot) -> plt.Figure:
-    """draws image object to figure."""
-    f = ggim.draw()
-    f = _add_image(f, ggim.environment.eval("image"))
-    return f
-
-
-def ggimg_toImage(gimg: plotnine.ggplot) -> PIL.Image.Image:
+def ggimg_draw(gimg: plotnine.ggplot) -> PIL.Image.Image:
     """renders to PIL.Image"""
-    plt.ioff()
-    try:
+    with plt.ioff():
+        f = gimg.draw()
+        # actually adds the image to the axes
+        f = _add_image(f, gimg.environment.eval("image"))
         buf = io.BytesIO()
-        f = ggimg_draw(gimg)
         f.savefig(buf, format="png")
         plt.close(f)
         buf.seek(0)
         im = PIL.Image.open(buf)
-    finally:
-        plt.ion()
 
     return im

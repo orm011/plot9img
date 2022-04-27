@@ -1,4 +1,4 @@
-from plot9img import __version__, ggimg, ggimg_toImage
+from plot9img import __version__, ggimg, ggimg_draw
 import PIL.Image
 from pathlib import Path
 from plotnine import geom_rect, aes, geom_text
@@ -25,5 +25,5 @@ def test_PIL_render():
         + geom_text(aes(label="label", x="x1", y="y1", color="label"))
     )
 
-    annotated_im = ggimg_toImage(gimg)
+    annotated_im = ggimg_draw(gimg)
     assert annotated_im.size == im.size
