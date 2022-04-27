@@ -13,7 +13,7 @@ import plotnine
 import pandas 
 import matplotlib.pyplot as plt
 
-def theme_image(w : int, h : int, dpi=80) -> plotnine.theme:
+def _theme_image(w : int, h : int, dpi=80) -> plotnine.theme:
     """a theme with plotnine defaults for showing images without coordinates"""
     return theme(
         axis_line=element_blank(),
@@ -44,7 +44,7 @@ def ggimg(image : PIL.Image.Image, mapping : plotnine.aes = None, data: pandas.D
         + scale_y_reverse(limits=(0, h))
         + xlim(0, w)
         + scale_color_discrete(guide=False)  # removes legend for line color
-        + theme_image(w, h, dpi=dpi)
+        + _theme_image(w, h, dpi=dpi)
     )
 
 def _add_image(f, im):
@@ -62,10 +62,9 @@ def ggimg_draw(ggim : plotnine.ggplot) -> plt.Figure:
     f = _add_image(f, ggim.environment.eval("image"))
     return f
 
-def ggimg_toPIL(gimg : plotnine.ggplot) -> PIL.Image.Image:
+def ggimg_toImage(gimg : plotnine.ggplot) -> PIL.Image.Image:
     """ renders to PIL.Image
     """
-    import PIL
     plt.ioff()
     try:
         buf = io.BytesIO()
