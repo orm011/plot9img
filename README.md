@@ -15,4 +15,4 @@ Plot9img helps plot any image data you have around, as long as you provide your 
 Coordinates are assumed to be absolute (pixels) with 0,0 at the top left of the image.
 
 # examples:
-see notebook in examples/ folder
+see notebook in [examples/boxes.ipynb](examples/boxes.ipynb)
