@@ -1,11 +1,13 @@
 [tool.poetry]
 name = "plot9img"
 version = "0.1.0"
-description = ""
+description = "versatile visualization of images and labels (eg boxes, text, masks) by re-using grammar of graphics"
 authors = ["Oscar Moll <orm@csail.mit.edu>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
+plotnine = "^0.6.0"
+matplotlib = "^3.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
