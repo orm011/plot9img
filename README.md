@@ -16,3 +16,6 @@ Coordinates are assumed to be absolute (pixels) with 0,0 at the top left of the 
 
 # examples:
 see notebook in [examples/boxes.ipynb](examples/boxes.ipynb)
+
+# trying it out:
+`pip install git+https://github.com/orm011/plot9img.git@v0.1.0-alpha`
