@@ -1,26 +1,20 @@
 from plotnine import (
     ggplot,
-    geom_polygon,
-    geom_map,
-    facet_wrap,
-    aes,
-    geom_text,
-    annotate,
     scale_y_reverse,
     xlim,
-    ylim,
     theme,
     element_blank,
-    geom_vline,
-    geom_hline,
 )
 from plotnine import scale_color_discrete
-from plotnine import geom_rect, geom_polygon
 import matplotlib.pyplot as plt
 import io
+import PIL.Image
+import plotnine
+import pandas 
+import matplotlib.pyplot as plt
 
-def theme_image(w, h, dpi=80):
-    """defaults for showing images without coordinates"""
+def theme_image(w : int, h : int, dpi=80) -> plotnine.theme:
+    """a theme with plotnine defaults for showing images without coordinates"""
     return theme(
         axis_line=element_blank(),
         axis_text_x=element_blank(),
@@ -43,8 +37,7 @@ def theme_image(w, h, dpi=80):
         dpi=dpi,
     )
 
-
-def ggimg(image, mapping=None, data=None, dpi=80):
+def ggimg(image : PIL.Image.Image, mapping : plotnine.aes = None, data: pandas.DataFrame = None, dpi=80) -> plotnine.ggplot:
     w, h = image.size
     return (
         ggplot(mapping=mapping, data=data)
@@ -52,24 +45,9 @@ def ggimg(image, mapping=None, data=None, dpi=80):
         + xlim(0, w)
         + scale_color_discrete(guide=False)  # removes legend for line color
         + theme_image(w, h, dpi=dpi)
-        + annotate(
-            "rect", xmin=0, xmax=w, ymin=0, ymax=h, color="black", fill=None
-        )  # box around image
     )
 
-
-def rescale_data(im, bx, box_cols=["xmin", "xmax", "ymin", "ymax"], max_size=200):
-    tx = T.Resize(max_size)
-    w, h = im.size
-    im2 = tx(im)
-    w2, h2 = im2.size
-    sf = w2 / w
-    for c in box_cols:
-        bx2 = bx.assign(**{c: bx[c] * sf})
-    return im2, bx2
-
-
-def add_image(f, im):
+def _add_image(f, im):
     w, h = im.size
     for ax in f.get_axes():
         ax.imshow(im, origin="lower", extent=(0, w, 0, -h))
@@ -77,32 +55,21 @@ def add_image(f, im):
         ax.set_ylim(-h, 0)
     return f
 
-
-def draw_ggimg(ggim):
+def ggimg_draw(ggim : plotnine.ggplot) -> plt.Figure:
+    """ draws image object to figure. 
+    """
     f = ggim.draw()
-    f = add_image(f, ggim.environment.eval("image"))
+    f = _add_image(f, ggim.environment.eval("image"))
     return f
 
-
-def ggimg_draw(ggim):
-    return draw_ggimg(ggim)
-
-
-def add_mask(f, mask, d=96):
-    h, w = mask.shape([0, 1])
-    for ax in f.get_axes():
-        ax.matshow(mask, origin="lower", extent=(0, d * w, 0, -d * h), alpha=0.2)
-        ax.set_xlim(0, d * w)
-        ax.set_ylim(-d * h, 0)
-    return f
-
-
-def toPIL(gimg):
+def ggimg_toPIL(gimg : plotnine.ggplot) -> PIL.Image.Image:
+    """ renders to PIL.Image
+    """
     import PIL
     plt.ioff()
     try:
         buf = io.BytesIO()
-        f = draw_ggimg(gimg)
+        f = ggimg_draw(gimg)
         f.savefig(buf, format="png")
         plt.close(f)
         buf.seek(0)
